@@ -1,0 +1,912 @@
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig
+implement WebSocketMessageBrokerConfigurer{
+
+  @Override
+      public void configureWebSocketTransport(WebSocketTransportRegistration registration)
+      {
+      registration.setSendTimeLimit(15*1000).setSendBufferSizeLimit(512*1024);
+      }
+}
+
+//
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig
+implement WebSocketMessageBrokerConfigurer{
+
+  @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration){
+
+    registration.setMessageSizeLimit(128*1024);
+    }}
+  //
+  @WebApplicationContext ctx=WebApplicationContextUtils.getWebApplicationContext(servletContext)
+
+  //
+  ApplicationContext ctx = FacesContextUtil.getWebApplicationContext(FacesContext.getCurrentInstance());
+  // Chapter 6. Web on Reactive Stack
+  //
+HttpHandler handler = ...
+  ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(
+      handler);HttpServer.create().host(host).port(p).handle(adapter).bind().block();
+
+  //
+HttpHandler handler = ...
+  UndertowHttpHandlerAdapter adapter = new UndertowHttpHandlerAdapter(handler);
+  Undertow server = Undertow.builder().addHttpListener(port, host)
+      .setHandler(adapter).build();server.start();
+  //
+HttpHandler handler = ...
+  Servlet servlet = new TomcatHttpHandlerAdapter(handler);
+
+  Tomcat server = new Tomcat();
+  File base = new File(System.getProperty("java.io.tmdir"));
+  Context rootContext = server.addContext("", base
+      .getAbsolutePath());Tomcat.addServlet(rootContext,"main",servlet);rootContext.addServletMappingDecoded("/","main");server.setHost(host);server.setPort(port);server.start();
+  //
+HttpHandler handler = ...
+  Servlet servlet = new JettyHttpHandlerAdapter(handler);
+
+  Server server = new Server();
+  ServletContextHandler contextHandler = new ServletContextHandler(server,
+      "");contextHandler.addServlet(new ServletHolder(servlet),"/");contextHandler.start();
+
+  ServerConnector connector = new ServerConnector(
+      server);connector.setHost(host);connector.setPort(port);server.addConnector(connector);server.start();
+
+  //
+Mono<MultiValueMap<String, String>>getFormData();
+
+  //
+Mono<MultiValueMap<String, Part>>getMultipartData();
+
+  //
+  @Configuration
+  @EnableWebFlux
+  class myConfig implements WebFluxConfigurer {
+
+    @Override
+    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+      configurer.defaultCodecs().enableLoggingRequestDetail(true);
+
+    }
+  }
+
+  //
+  Comsumer<ClientCodecConfigurer> consumer = configurer -> configurer.defaultCodes().enableLoggingRequestDetail(true);
+
+WebClient webClient = WebClient.builder()exchangeStrategies.(strategies->strategies.codecs(consumers)).build();
+  //
+  WebClient webClient = WebClient.builder()
+      .codecs(configurer -> {
+        CustomDecoder decoder = new CustomDecoder();
+        configurer.customCodecs().registerWithDefaultConfig(decoder);
+
+      })
+      .build();
+
+  //
+ApplicationContext ctx = ...
+  HttpHandler handler = WebHttpHandlerBuilder.applicationContext(context).build();
+  // 1117P
+
+  @RestController
+  public class HelloController {
+
+    @GetMapping("/hello")
+    public Stirng handle() {
+      return "Hello WebFlux";
+    }
+  }
+
+  //
+  @Configuration
+  @ComponentScan("org.example.web")
+  public class WebConfig {
+
+  }
+
+  //
+  @RestController
+  @RequestMapping("/persons")
+  class PersonController {
+
+    @GetMapping("/{id}")
+    public Person getPerson(@PathVariable Long id) {
+
+    }
+
+    @PostMapping @ResponseStatus(HttpStatus.CREATED){
+
+    public void add(@RequestBody Person person) {
+
+    }
+  }
+
+  //
+@GetMapping("/owners/{ownerId}/pets/{petId}")
+  public Pet findPet(@PathVariable Long ownerId, @PathVariable Long petId){
+  
+  }
+
+  //
+  @Controller
+  @RequestMapping("/owners/{ownerId}")
+  class OwnerController {
+
+    @GetMapping("/pets/{petId}")
+    fun findPet(@PathVariable ownerId: Long, @PathVariable petId: Long): Pet{
+      
+    }
+  }
+
+    //
+    @GetMapping("/{name:[a-z-]+}-{version:\\b\\.\\d}{ext:\\.[a-z]+}")
+    public void handle(@PathVariable String version, @PathVariable String ext) {
+
+    }
+
+    //
+    @PostMapping(path = "/pets", comsumes = "application/json")
+    public void addPet(@RequestBody Pet pet) {
+
+    }
+
+    //
+    @GetMapping(path = "/pets/{petId}", produces = "application/json")
+    @ResponseBody
+    public Pet getPet(@PathVariable String petId) {
+
+    }
+
+    //
+GetMapping(path = "/pets/{petId}", params = "myParam=myValue")
+
+    public void findPet(@PathVariable String petId) {
+
+    }
+
+    //
+    @GetMapping(path = "/pets", headers = "myHeader=myValue")
+    public void findPet(@RequestHeader String myHeader) {
+
+    }
+
+    //
+    @Configuration
+    public class MyConfig {
+
+    @Autowired
+    public void setHandlerMapping(RequestMappingHandlerMapping mappping UserHandler
+                                 handler)
+
+    throws NoSuchMethodException{
+
+      RequestMappingInfo info = RequestMappingInfo.
+        paths("/user/{id}").methods(RequestMethod.GET).build();
+
+      Method method = UserController.class.getMethod("getUser", Long.class);
+
+      mapping.registerMapping(infom handler, method  );
+    }
+    }
+
+    //
+    @GetMapping("/pets/{petId}  ")
+    public void findPet(@PathVariable String petId, @MatrixVariable int q) {
+
+    }
+
+    //
+    @GetMapping("/owners/{ownerId}/pets/{petId}")
+    public void findPet(
+        @MatrixVariable(name = "q", pathVar = "ownerId") int q1,
+
+        @MatrixVariable(name = "q", pathVar = "petId") int q2) {
+
+    }
+
+    //
+    @GetMapping("/pets/{petId}")
+    public void findPet(@MatrixVariable(required = false, defaultValue = "1") int q) {
+
+    }
+    //
+
+    @GetMapping("/owners/{ownerId}/pets/{petId}")
+    public void findPet(
+        @MatrixVariable MultiValueMap<String, String> matrixVars,
+        @MatrixVariable(pathVar = "petId") MultiValueMap<String, String> petMatrixVars) {
+
+    }
+
+    //
+    @Controller
+    @RequestMapping("/pets")
+    public class EditPetForm {
+
+      @GetMapping
+      public String setupForm(@RequestParam("petId") int petId, Model model) {
+
+        Pet pet = this.clinic.loadPet(petId);
+        model.addAttribute("pet", pet);
+        return "petForm";
+      }
+    }
+
+    //
+    @GetMapping("/demo")
+    public void handle(
+        @RequestHeader("Accept-Encoding") String encoding,
+        @RequestHeader("Keep-Alive") long keepAlive) {
+
+    }
+
+    //
+    @GetMapping("/demo")
+    public void handle(@CookieValue("JESSIONID") String cookie) {
+
+    }
+
+    //
+@PostMapping("/owners/{ownerId}/pets/{petId}/edit")
+  fun processSubmit(@ModelAttribute pet:Pet):String {}
+
+    //
+    @PostMapping("/owners/{ownerId}/pets/{petId}/edit")
+    public String processSubmit(@Valid @ModelAttribute("pet") Pet pet, BindingResult result) {
+
+      if (result.hasErrors()) {
+        return "petForm";
+      }
+    }
+
+    //
+    @PostMapping("/owners/{ownerId}/pets/{petId}/edit")
+    public Mono<String> processSubmit(@Valid @ModelAttribute("pet") Mono<Pet> petMono) {
+      return petMono
+          .flatMap(pet -> {
+
+          })
+          .onErrorResume(ex -> {
+
+          });
+    }
+
+    //
+    @Controller
+    @SessionAttributes("pet ")
+    public class EditPetForm {
+
+    }
+
+    //
+    @Controller
+    @SessionAttribute("pet")
+    public class EditPetForm {
+
+      @PostMapping("/pets/{id}")
+      public String handler(Pet pet, BindingResult errors, SessionStatus status) {
+        if (errors.hasErrors()) {
+
+        }
+        status.setComplete();
+      }
+    }
+  }
+
+  //
+@GetMapping("/")
+  public String handle(@SessionAttribute User user){
+  
+  }
+
+  //
+@GetMapping("/")
+  public String handle(@SessionAttribute Client client){
+  
+  }
+
+  //
+  class MyForm {
+
+    private String name;
+
+    private MultipartFile file;
+  }
+
+  @Controller
+  public class FileUploadController {
+
+    @PostMapping("/form")
+    public String handlerFormUpload(MyForm form, BindingResult errors) {
+
+    }
+  }
+
+  //
+@PostMapping("/")
+  public String handle(@RequestPart("meta-data") Part metadata,
+                      @RequestPart("file-data") FilePart file)){
+  
+                      }
+
+  //
+@PostMapping("/")
+  public String handle(@RequestPart("meta-data") MetaData metadata){
+  
+  }
+
+  //
+@PostMapping("/")
+  public String handle(@RequestBody Mono<MultiValueMap<String, Part>> parts){
+  
+  }
+
+  //
+@PostMapping("/")
+  public void handle(@RequestBody Flux <PartEvent> allPartsEvents){
+  allPartsEvents.windowUntil(PartEvent::isLast)
+    .concatMap(p -> p.switchOnFirst(signal, partEvents) -> {
+               if(signal.hasValue()){
+                 PartEvent event = signal.get();
+                 if(event instanceof FormPartEvent formEvent){
+                   String value = formEvent.value();
+                 
+                 
+                 }
+                 else if(event instanceof FilePartEvent fileEvent){
+                   String filename = fileEvent.filename();
+                   Flux<DataBuffer>contents =
+                     partEvents.map(PartEvent::content);
+                 }
+
+                 else{
+                   return Mono.error(new RuntimeException("Unexpected event: " +
+                                                         event));
+                 }
+               }
+    else{
+      return partEvents;
+    }
+    }));
+  }
+  // 1152
+
+@PostMapping("/accounts")
+  public void handle(@RequestBody <Account> account){
+  
+  }
+
+  //
+@PostMapping("/accounts")
+  public void handle(@RequestBody Mono<Account> account){
+  
+  }
+
+  //
+@PostMapping("/accounts")
+  public void handle(@Valid @RequestBody Mono<Account> account){
+  
+  }
+
+  //
+@PostMapping("/accounts")
+  public void handle(HttpEntity<Account>entity){
+  
+  }
+
+  //
+@GetMapping("/accounts/{id}")
+  @ResponseBody
+  public Account handle(){
+  
+  }
+
+  //
+@GetMapping("/something")
+  public ResponseEntity<String>handle(){
+  String body = ....;
+  String etag = ...;
+  return ResponseEntity.ok().eTag(etag).body(body);
+  }
+
+  //
+  @RestController
+  public class UserController {
+
+    @GetMapping("/user")
+    @JsonView(User.WithoutPasswordView.class)
+    public User getUser() {
+      return new User("eric", "7!jd#h23");
+    }
+
+  }
+
+  public class User {
+
+    public interface WithoutPasswordView {
+    };
+
+    public interface WithPasswordView exrtendsWithoutPasswordView
+    {
+      };
+
+      private String username;
+      private String password;
+
+  public User(){
+
+    
+  }
+
+  public User(String username, String password){
+    this.username = username;
+    this.password = password;
+  }
+
+  @JsonView(WithoutPasswordView.class)
+  public String getUsername(){
+    return this.username;
+  }@JsonView(WithPasswordView.class){
+
+    public String getPassword(){
+      return this.password;
+    }
+    }
+
+    //
+  @ModelAttribute
+  public void populateModel(@RequestParam String number ,Model model){
+
+    model.addAttribute(accountRepository.findAccount(number));
+  }
+
+    //
+  @ModelAttribute
+  public Account addAccount(@RequestParam String number){
+    return accountRepository.findAccount(number);
+    
+  }
+
+    //
+  @ModelAttribute
+  public void addAccount(@RequestParam String number){
+    Mono<Account>accountMono = accountRepository.findAccount(number);
+    model.addAttribute("account", accountMono);
+  }
+
+  @PostMapping("/accounts")
+  public String handle(@ModelAttribute Account account, BindingResult errors){
+    
+  }
+
+    //
+  @GetMapping("/accounts/{id}")
+  @ModelAttribute("myAccount")
+  public Account handle(){
+    return account;
+  }
+
+    //
+    @Controller
+    public class FormController {
+
+      @InitBinder
+      public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dataFormat = new SimpleDateFormat("dd/MM/yyyy");
+        dataFormat.setLenient(false);
+        binder.registerCustomeEditor(Date.class, new CustomDateEditor(dataFormat, false));
+      }
+    }
+
+    //
+    @Controller
+    public class FormController {
+
+      @InitBinder
+      protected void initBinder(WebDataBinder binder) {
+        binder.addCustomFormatter(new DateFormatter("yyyy-MM-dd"));
+      }
+    }
+
+    //
+    public class ChangeEmailForm {
+
+      private String oldEmailAddress;
+      private String newEmailAddress;
+
+      public void setOldEmailAddress(String oldEmailAddress) {
+        this.oldEmailAddress = oldEmailAddress;
+      }
+
+      public String getOldEmailAddress() {
+        return this.oldEmailAddress;
+      }
+
+      public void setNewEmailAddress(String newEmailAddress) {
+        this.newEmailAddress = newEmailAddress;
+      }
+
+      public String getNewEmailAddress() {
+        return this.newEmailAddress;
+      }
+
+    }
+
+    //
+    @Controller
+    public class ChangeEmailController {
+
+      @InitBinder
+      void initBinder(WebDataBinder binder) {
+        binder.setAllowedFields("oldEmailAddress", "newEmailAddress");
+      }
+
+    }
+
+    //
+    @Controller
+    public class SimpleController {
+
+      @ExceptionHandler
+      public ResponseEntity<String> handle(IOException ex) {
+
+      }
+    }
+
+    //
+    @ControllerAdvice(annotations = RestController.class)
+    public class ExampleAdvice1 {
+    }
+
+    @ControllerAdvice("org.example.controllers")
+    public class ExampleAdvice2 {
+    }
+
+  @ControllerAdvice(assignableTypes = {ControllerInterface.class,
+AbstractController.class})
+  public class ExampleAdvice3 {}
+    //
+
+  PersonRepository repository = ...
+    PersonHandler handler = new PersonHandler(repository);
+
+    RouterFunction<ServerResponse> route = route()
+        .GET("/person/{id}", accept(APPLICATION_JSON), handler::getPerson)
+        .GET("/persons", accept(APPLICATION_JSON), handler::listPersons)
+        .POST("/person", handler::createPerson)
+        .build();
+
+    public class PersonHandler {
+
+      public Mono<ServerResponse> listPeople(ServerRequest request) {
+
+      }
+
+      public Mono<ServerResponse> createPeople(ServerRequest request) {
+
+      }
+
+      public Mono<ServerResponse> getPeople(ServerRequest request) {
+
+      }
+
+      //
+      Mono<String> string = request.bodyToMono(String.class);
+      //
+      Flux<Person> people = request.bodyToFlux(Person.class);
+      //
+      Mono<String> string = request.body(BodyExtractors.toMono(String.class));
+      Flux<Person> people = request.body(BodyExtractors.toFlux(Person.class));
+      //
+      Mono<MultiValueMap<String, String> map = request.formData();
+      //
+      Mono<MultiValueMap<String, Part>> map = request.multipartData();
+      //
+    Flux<PartEvent> allPartEvents = request.body(bodyToFlux(PartEvent.class);
+    allPartsEvent.windowUntil(PartEvent::isLast)
+    .concatMap(p -> p.switchOnFirst(signal, partEvents) ->{
+      if(signal.hasValue()){
+      PartEvent event = signal.get();if(event instanceof
+      FormPartEvent formEvent)
+      {
+        String value = formEvent.value();
+      }else if(event instanceof
+      FilePartEvent fileEvent)
+      {
+        String filename = fileEvent.filename();
+        Flux<DataBuffer> contents = partEvents.map(PartEvent::content);
+      }
+
+      else
+      {
+        return Mono.erro(new RuntimeException("Unexpected event:" +
+            event));
+      }
+    }else
+
+    {
+      return partEvents;
+    }
+  }));
+
+  //
+  Mono<Person>person = ...
+    ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(person, Person.class);
+    //
+  URI location = ...
+    ServerResponse.created(location).build();
+    ///
+    ServerResponse.ok().hint(Jackson2CodecSupport.JSON_VIEW_NAME_HINT, 
+      MyJacksonView.class).build(...);
+    //
+  HandlerFunction<ServerResponse> helloWorld = (request) -> ServerResponse.ok().body("Hello World");
+
+  //
+  public class PersonHandler {
+
+    private final PersonRepository repository;
+
+    public PersonHandler(PersonRepository repository) {
+      this.repository = repository;
+    }
+
+    public Mono<ServerResponse> listPeople(ServerRequest request) {
+      Flux<Person> people = reposiory.allPeople();
+      return ok().contentType(APPLICATION_JSON).body(people, Person.class);
+
+    }
+
+    public Mono<ServerResponse> creatPerson(ServerRequest request) {
+      Mono<Person> person = request.bodyToMono(Person.class);
+      return ok().build(reposiory.savePerson(person));
+    }
+
+    public Mono<ServerResponse> getPerson(ServerRequest request) {
+      int personId = Integer.parseInt(request.pathVariable("id"));
+      return repository.getPerson(personId)
+          .flatMap(person -> ok().contentType(APPLICATION_JSON).bodyValue(person))
+          .switchIfEmpty(ServerReponse.notFound().build);
+    }
+  }
+
+  //
+  public class PersonHandler {
+    private final Validator validator = new PersonValidator();
+
+    public Mono<ServerResponse> createPerson(ServerRequest request) {
+
+      Mono<Person> person = request.bodyToMono(Person.class).doOnNext(this::validate);
+      return ok().build(repository.savePerson(person));
+    }
+
+    private void validate(Person person) {
+      Errors errors = new BeanPropertyBindingResult(person, "person");
+      validator.validate(person, errors);
+      if (errors.hasErrors()) {
+        throw new ServerWebInputException(errors.toString());
+      }
+    }
+  }
+
+  // 1176P
+  RouterFunction<ServerResponse> route = RouterFunctions.route()
+      .GET("/hello-world", accept(MediaType.TEXT_PLAIN),
+          request -> ServerResponse.ok().bodyValue("Hello World"))
+      .build();
+  //
+  PersonRepository repository = ...
+  PersonHandler handler = new PersonHandler(repository);
+
+  RouterFunction<ServerResponse>otherRoute = ...
+      .GET("/person/{id}", accept(APPLICATION_JSON), handler::getPerson)
+      .GET("/persons", accept(APPLICATION_JSON), handler::listPeople)
+      .POST("/person", handler::createPerson)
+      .add(otherRoute)
+      .build();
+      //
+  RouterFunction<ServerResponse> route = route()
+      .path("/person", builder -> builder
+           .GET("/{id}", accept(APPLICATION_JSON, )handler::getPerson)
+           .GET(accept(APPLICATION_JSON), handler::listPeople)
+                .POST(handler::createPerson))
+            
+           .build();
+           //
+  RouteFunction<ServerResponse>route = route()
+      .path("/person", b1 -> b1
+           .nest(accept(APPLICATION_JSON), b2 ->b2
+                 .GET("{id}", handler::getPerson)
+                 .GET(handler::listPeople)
+                 POST(handler::createPerson)
+              .build();
+            //
+  @Configuration
+  @EnableWebFlux
+  public class WebConfig implements WebFluxConfigurer {
+
+    @Bean
+    public RouterFunction<?> routerFunctionA() {
+
+    }
+
+    @Bean
+    public RouterFunction<?> routerFunctionB() {
+
+    }
+
+    @Override
+    public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
+
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+
+    }
+
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+
+    }
+  }
+
+  //
+RouterFunction<ServerResponse> route = route()
+      .path("/person", b1->b1
+           .nest(accept(APPLICATION_JSON), b2 ->b2
+                .GET("{id}", handler::getPerson)
+                 .GET(handler::listPeople)
+                 .before(request -> ServerResponse.from(request)
+                         .header("X-RequestHeader", "Value")
+                         .build()))
+
+            .POST(handler::createPerson))
+      .after((request, response) -> logResponse.from(response))
+                .build()
+  //
+  SecurityManager securityManager = ..
+
+  RouterFunction<ServerResponse> route = route()
+      .path("/person", b1->b1
+           .nest(accept(APPLICATION_JSON), b2 ->b2
+                .GET("/{id}", handler::getPerson)
+                 .GET(handler::listPeople))
+            .POST(handler::createPerson))
+      .filter((request, next) ->{
+if(securityManager.allowAccessTo(request.path())){
+  return next.handle(request);
+}
+        else{
+          return ServerResponse.status(UNAUTHORIZED).build();
+        }
+
+        
+      })
+                
+                .build();
+  //
+  UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/person")
+      .queryParam("q", "{q}")
+      .encode()
+      .build();
+
+  URI uri = uriComponents.expand("Westin", "123").toUri();
+  //
+  URI uri = UriComponentsBuilder.
+
+      fromHttpUrl("http://localhost:8080/person")
+      .queryParam("q", "{q}")
+      .encode()
+      .buildAndExpand("Westin", "123")
+      .toUri();
+  //
+URi uri = UriComponentsBuilder.
+      fromHttpUrl("http://localhost:8080/person")
+
+queryParam("q", "{q}")
+      .build("Westin", "123");
+      //
+      URI uri = UriComponentsBuilder.
+      fromUriString("http://localhost:8080/person")
+      .build("Westin", "123");
+      //
+      String baseUri = "http://localhost:8080/person";
+      DefaultUriBuilderFactory factory =new DefaultUriBuilderFactory(baseUri);
+      factory.setEncodingMode(EncodingMode.TEMPLATE_AND_VALUES);
+
+      RestTemplate.restTemplate = new RestTemplate();
+      restTemplate.setUriTemplateHandler(factory);
+//
+      String baseUri = "http://localhost:8080/person";
+      DefaultBuilderFactory factory = new DefaultBuilderFactory(baseUri);
+      factory.setEncodingMode(EncodingMode.TEMPLATES_AND_VALUES);
+
+      WebClient client = WebClinet.builder().uriBuilerFactory(factory).build();
+      //
+      String baseUrl = "http://example.com";
+      DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(baseUrl);
+
+      URI uri = uriBuilderFactory.uriString("/hotels/{hotel}")
+      .queryParam("q", "{q}")
+      .build("Westin", "123");
+      //1189P
+URI uri  =UriComponentBuilder.fromPath("/hotel list/{city}")
+      .queryParam("q", "{q}")
+      .encode()
+      .buildAndExpand("New York", "foo+bar")
+      .toUri();
+      //
+      URI uri = UriComponentBuilder.fromPath("/hotel list/{city}")
+      .queryParam("q", "{q}")
+      .build("New York", "foo+bar");
+      //
+      URI uri = UriComponentBuilder.fromUriString("/hotel list/{city}? q={q}")
+      .build("New York", "foo+bar");
+
+      //
+      String baseUrl = "http://example.com";
+      DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(baseUrl);
+      factory.setEncodingMode(EncodingMode.TEMPLATES_AND_VALUES);
+
+      RestTemplate restRestTemplate = new RestTemplate();
+      restTemplte.setUriTemplateHandler(factory);
+
+      WebClinet client = WebClinet.builder().uriBulderFactory(factory).build();
+      //
+      @RestController
+      @RequestMapping("/account")
+      public class AccountController{
+
+        @CrossOrigin
+        @GetMapping("/{id}")
+      public Mono<Account> retrieve(@PathVariable Long id ){
+        
+      }
+
+        @DeleteMapping("/{id}")
+      public Mono<Void> remove(@PathVariable Long id){
+        
+      }
+      }
+
+      //
+      @CrossOrigin(origins = "http://localhost:8080", maxAge = 3600)
+      @RestController
+      @RequestMapping("/account")
+      public class AccountController{
+
+
+        @GetMapping("/{id}")
+                         public Mono<Account>retrieve(@PathVariable Long id){
+                           
+                         }  
+      
+      
+      @DeleteMapping("/{id}")
+      
+      public Mono<Void> remove(@PathVariable Long id){
+      }
+      }
+      //
+      @CrossOrigin(maxAge = 3600)
+      @RestController
+      @RequestMapping("/account")
+      public class AccountController{
+
+        @CrossOrigin("http://localhost:8080")
+        @GetMapping("/{id}")
+        public Mono<Account> retrieve(@PathVariable Long id){
+          
+        }
+
+        @DeleteMapping("{id}")
+      public Mono<void> remove(@PatheVariable Long id){
+        
+      }
+      
+      }
+      //1196P
